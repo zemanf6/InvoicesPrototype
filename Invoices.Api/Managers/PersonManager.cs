@@ -26,14 +26,12 @@ namespace Invoices.Api.Managers
         public PersonDto? GetById(int id)
         {
             var person = _personRepository.GetById(id);
-            if (person == null || person.Hidden) 
-            {
+            if (person is null) 
                 return null;
-            }
 
             return _mapper.Map<PersonDto>(person);
         }
-
+        
         public PersonDto Create(PersonDto dto)
         {
             Person person = _mapper.Map<Person>(dto);
