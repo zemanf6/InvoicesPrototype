@@ -1,0 +1,53 @@
+﻿using AutoMapper;
+using Invoices.Api.Managers.Interfaces;
+using Invoices.Api.Models;
+using Invoices.Data.Entities;
+using Invoices.Data.Repositories.Interfaces;
+
+namespace Invoices.Api.Managers
+{
+    public class PersonManager : IPersonManager
+    {
+        private readonly IPersonRepository _personRepository;
+        private readonly IMapper _mapper;
+
+        public PersonManager(IPersonRepository personRepository, IMapper mapper)
+        {
+            _personRepository = personRepository;
+            _mapper = mapper;
+        }
+
+        public IEnumerable<PersonDto> GetAll()
+        {
+            var people = _personRepository.GetByHidden(false);
+            return _mapper.Map<IEnumerable<PersonDto>>(people);
+        }
+
+        public PersonDto Create(PersonDto dto)
+        {
+            var person = _mapper.Map<Person>(dto);
+            var addedPerson = _personRepository.Add(person);
+            _personRepository.SaveChanges();
+            return _mapper.Map<PersonDto>(addedPerson);
+        }
+
+        public void Delete(int id)
+        {
+            if (HidePerson(id) != null)
+            {
+                _personRepository.SaveChanges();
+            }
+        }
+
+        private Person? HidePerson(int personId)
+        {
+            Person? person = _personRepository.GetById(personId);
+
+            if (person is null)
+                return null;
+
+            person.Hidden = true;
+            return _personRepository.Update(person);
+        }
+    }
+}

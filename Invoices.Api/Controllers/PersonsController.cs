@@ -1,0 +1,43 @@
+﻿using Invoices.Api.Managers.Interfaces;
+using Invoices.Api.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Invoices.Api.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PersonsController : ControllerBase
+    {
+        private readonly IPersonManager _personManager;
+
+        public PersonsController(IPersonManager personManager)
+        {
+            _personManager = personManager;
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<PersonDto>> GetAll()
+        {
+            var people = _personManager.GetAll();
+            return Ok(people);
+        }
+
+        [HttpPost]
+        public ActionResult<PersonDto> Create([FromBody] PersonDto dto)
+        {
+            var created = _personManager.Create(dto);
+
+            // TODO: až bude implementován detail (GET /api/persons/{id}), lze vracet tohle:
+            // return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+
+            return Created(string.Empty, created);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            _personManager.Delete(id);
+            return NoContent();
+        }
+    }
+}
