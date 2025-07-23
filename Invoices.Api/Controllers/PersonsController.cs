@@ -39,9 +39,7 @@ namespace Invoices.Api.Controllers
             bool success = _personManager.Delete(id);
 
             if (!success)
-            {
                 return NotFound();
-            }
 
             return NoContent();
         }
