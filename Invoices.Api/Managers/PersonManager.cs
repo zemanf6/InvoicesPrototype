@@ -31,12 +31,15 @@ namespace Invoices.Api.Managers
             return _mapper.Map<PersonDto>(addedPerson);
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             if (HidePerson(id) != null)
             {
                 _personRepository.SaveChanges();
+                return true;
             }
+
+            return false;
         }
 
         private Person? HidePerson(int personId)

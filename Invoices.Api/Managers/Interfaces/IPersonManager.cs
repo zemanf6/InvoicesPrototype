@@ -6,6 +6,6 @@ namespace Invoices.Api.Managers.Interfaces
     {
         IEnumerable<PersonDto> GetAll();
         PersonDto Create(PersonDto dto);
-        void Delete(int id);
+        bool Delete(int id);
     }
 }

@@ -36,7 +36,13 @@ namespace Invoices.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _personManager.Delete(id);
+            bool success = _personManager.Delete(id);
+
+            if (!success)
+            {
+                return NotFound();
+            }
+
             return NoContent();
         }
     }
