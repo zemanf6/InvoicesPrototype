@@ -19,14 +19,25 @@ namespace Invoices.Api.Managers
 
         public IEnumerable<PersonDto> GetAll()
         {
-            var people = _personRepository.GetByHidden(false);
+            IEnumerable<Person> people = _personRepository.GetByHidden(false);
             return _mapper.Map<IEnumerable<PersonDto>>(people);
+        }
+
+        public PersonDto? GetById(int id)
+        {
+            Person? person = _personRepository.GetById(id);
+            if (person == null || person.Hidden)
+            {
+                return null;
+            }
+
+            return _mapper.Map<PersonDto>(person);
         }
 
         public PersonDto Create(PersonDto dto)
         {
-            var person = _mapper.Map<Person>(dto);
-            var addedPerson = _personRepository.Add(person);
+            Person person = _mapper.Map<Person>(dto);
+            Person addedPerson = _personRepository.Add(person);
             _personRepository.SaveChanges();
             return _mapper.Map<PersonDto>(addedPerson);
         }

@@ -18,19 +18,26 @@ namespace Invoices.Api.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<PersonDto>> GetAll()
         {
-            var people = _personManager.GetAll();
+            IEnumerable<PersonDto> people = _personManager.GetAll();
             return Ok(people);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<PersonDto> GetById(int id)
+        {
+            PersonDto? person = _personManager.GetById(id);
+            if (person == null)
+                return NotFound();
+
+            return Ok(person);
         }
 
         [HttpPost]
         public ActionResult<PersonDto> Create([FromBody] PersonDto dto)
         {
-            var created = _personManager.Create(dto);
+            PersonDto created = _personManager.Create(dto);
 
-            // TODO: až bude implementován detail (GET /api/persons/{id}), lze vracet tohle:
-            // return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-
-            return Created(string.Empty, created);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpDelete("{id}")]
