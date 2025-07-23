@@ -25,8 +25,8 @@ namespace Invoices.Api.Managers
 
         public PersonDto Create(PersonDto dto)
         {
-            var person = _mapper.Map<Person>(dto);
-            var addedPerson = _personRepository.Add(person);
+            Person person = _mapper.Map<Person>(dto);
+            Person addedPerson = _personRepository.Add(person);
             _personRepository.SaveChanges();
             return _mapper.Map<PersonDto>(addedPerson);
         }
