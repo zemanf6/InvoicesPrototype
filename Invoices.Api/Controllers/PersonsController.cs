@@ -25,12 +25,12 @@ namespace Invoices.Api.Controllers
         [HttpPost]
         public ActionResult<PersonDto> Create([FromBody] PersonDto dto)
         {
-            PersonDto created = _personManager.Create(dto);
+            PersonDto createdPerson = _personManager.Create(dto);
 
             // TODO: až bude implementován detail (GET /api/persons/{id}), lze vracet tohle:
             // return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
 
-            return Created(string.Empty, created);
+            return Created(string.Empty, createdPerson);
         }
 
         [HttpDelete("{id}")]
