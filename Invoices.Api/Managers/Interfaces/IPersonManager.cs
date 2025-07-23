@@ -7,6 +7,7 @@ namespace Invoices.Api.Managers.Interfaces
         IEnumerable<PersonDto> GetAll();
         PersonDto? GetById(int id);
         PersonDto Create(PersonDto dto);
-        void Delete(int id);
+        PersonDto? Edit(int id, PersonDto dto);
+        bool Delete(int id);
     }
 }

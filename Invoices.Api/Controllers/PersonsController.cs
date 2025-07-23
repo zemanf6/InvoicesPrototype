@@ -35,15 +35,30 @@ namespace Invoices.Api.Controllers
         [HttpPost]
         public ActionResult<PersonDto> Create([FromBody] PersonDto dto)
         {
-            PersonDto created = _personManager.Create(dto);
+            PersonDto createdPerson = _personManager.Create(dto);
 
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            return CreatedAtAction(nameof(GetById), new { id = createdPerson.Id }, createdPerson);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<PersonDto> Edit(int id, [FromBody] PersonDto dto)
+        {
+            PersonDto? updatedPerson = _personManager.Edit(id, dto);
+            if (updatedPerson is null)
+                return NotFound();
+
+            return Ok(updatedPerson);
+
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _personManager.Delete(id);
+            bool success = _personManager.Delete(id);
+
+            if (!success)
+                return NotFound();
+
             return NoContent();
         }
     }

@@ -25,8 +25,8 @@ namespace Invoices.Api.Managers
 
         public PersonDto? GetById(int id)
         {
-            Person? person = _personRepository.GetById(id);
-            if (person == null || person.Hidden)
+            var person = _personRepository.GetById(id);
+            if (person == null || person.Hidden) 
             {
                 return null;
             }
@@ -42,12 +42,29 @@ namespace Invoices.Api.Managers
             return _mapper.Map<PersonDto>(addedPerson);
         }
 
-        public void Delete(int id)
+        public PersonDto? Edit(int id, PersonDto dto)
+        {
+            var hidden = HidePerson(id);
+            if (hidden is null)
+                return null;
+
+            var newPerson = _mapper.Map<Person>(dto);
+            newPerson.Id = default;
+            var added = _personRepository.Add(newPerson);
+
+            _personRepository.SaveChanges();
+            return _mapper.Map<PersonDto>(added);
+        }
+
+        public bool Delete(int id)
         {
             if (HidePerson(id) != null)
             {
                 _personRepository.SaveChanges();
+                return true;
             }
+
+            return false;
         }
 
         private Person? HidePerson(int personId)
