@@ -20,5 +20,8 @@ namespace Invoices.Data.Entities
         public required string Note { get; set; }
 
         public bool Hidden { get; set; }
+
+        public virtual ICollection<Invoice> Purchases { get; set; } = new List<Invoice>();
+        public virtual ICollection<Invoice> Sales { get; set; } = new List<Invoice>();
     }
 }

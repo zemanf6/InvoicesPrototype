@@ -22,13 +22,16 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IPersonManager, PersonManager>();
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IInvoiceManager, InvoiceManager>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<AutoMapperProfile>();
 });
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseLazyLoadingProxies()
+           .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
