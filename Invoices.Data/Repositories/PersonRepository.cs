@@ -12,11 +12,6 @@ namespace Invoices.Data.Repositories
             return _dbSet.Where(x => x.Hidden == hidden).ToList();
         }
 
-        public override Person? GetById(int id)
-        {
-            return _dbSet.FirstOrDefault(p => p.Id == id && !p.Hidden);
-        }
-
         public IList<Person> GetAllByIdentificationNumber(string identificationNumber)
         {
             return _dbSet

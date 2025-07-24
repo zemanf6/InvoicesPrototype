@@ -24,7 +24,7 @@ namespace Invoices.Data.Repositories
             return _dbSet.ToList();
         }
 
-        public virtual T? GetById(int id)
+        public T? GetById(int id)
         {
             return _dbSet.Find(id);
         }
