@@ -59,7 +59,10 @@ namespace Invoices.Api.Managers
             if (!_invoiceRepository.ExistsWithId(id))
                 return null;
 
-            if (dto.Buyer?.Id is not int buyerId || dto.Seller?.Id is not int sellerId)
+            if (dto.Buyer?.Id is not int buyerId || !_personRepository.ExistsWithId(buyerId))
+                return null;
+
+            if (dto.Seller?.Id is not int sellerId || !_personRepository.ExistsWithId(sellerId))
                 return null;
 
             Invoice invoice = _mapper.Map<Invoice>(dto);
@@ -69,7 +72,7 @@ namespace Invoices.Api.Managers
             invoice.Buyer = null!;
             invoice.Seller = null!;
 
-            Invoice updatedInvoice = _invoiceRepository.Update(invoice);
+            var updatedInvoice = _invoiceRepository.Update(invoice);
             _invoiceRepository.SaveChanges();
 
             MapPersons(updatedInvoice);

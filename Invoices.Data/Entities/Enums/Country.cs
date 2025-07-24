@@ -2,7 +2,7 @@
 {
     public enum Country
     {
-        Czechia,
-        Slovakia
+        CZECHIA,
+        SLOVAKIA
     }
 }

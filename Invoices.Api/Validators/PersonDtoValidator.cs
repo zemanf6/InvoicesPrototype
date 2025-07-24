@@ -16,6 +16,8 @@ namespace Invoices.Api.Validators
 
             RuleFor(x => x.Country)
                 .IsInEnum().WithMessage("Invalid country value.");
+
+            // A dále...
         }
     }
 }

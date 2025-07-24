@@ -15,7 +15,7 @@ namespace Invoices.Api.Models
         public DateTime Issued { get; set; }
 
         [Required]
-        public DateTime DuteDate { get; set; }
+        public DateTime DueDate { get; set; }
 
         [Required]
         public string Product { get; set; } = "";
