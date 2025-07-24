@@ -6,7 +6,7 @@ using Invoices.Data.Repositories.Interfaces;
 
 namespace Invoices.Api.Managers
 {
-    public class InvoiceManager: IInvoiceManager
+    public class InvoiceManager : IInvoiceManager
     {
         private readonly IInvoiceRepository _invoiceRepository;
         private readonly IPersonRepository _personRepository;
@@ -19,15 +19,26 @@ namespace Invoices.Api.Managers
             _personRepository = personRepository;
         }
 
-        public IEnumerable<InvoiceDto> GetAll()
+        public IEnumerable<InvoiceDto> GetAll(InvoiceFilterDto? filter = null)
         {
-            var invoices = _invoiceRepository.GetAll();
+            IEnumerable<Invoice> invoices = _invoiceRepository.GetAll(
+                buyerId: filter?.BuyerId,
+                sellerId: filter?.SellerId,
+                product: filter?.Product,
+                minPrice: filter?.MinPrice,
+                maxPrice: filter?.MaxPrice,
+                limit: filter?.Limit
+            );
+
+            foreach (Invoice invoice in invoices)
+                MapPersons(invoice);
+
             return _mapper.Map<IEnumerable<InvoiceDto>>(invoices);
         }
 
         public InvoiceDto? GetById(int id)
         {
-            var invoice = _invoiceRepository.GetById(id);
+            Invoice? invoice = _invoiceRepository.GetById(id);
             if (invoice is null)
                 return null;
 
@@ -36,21 +47,14 @@ namespace Invoices.Api.Managers
 
         public InvoiceDto? Create(InvoiceDto dto)
         {
-            if (dto.Buyer?.Id is not int buyerId || dto.Seller?.Id is not int sellerId)
+            Invoice? invoice = TryMapInvoice(null, dto);
+            if (invoice is null)
                 return null;
-
-            Invoice invoice = _mapper.Map<Invoice>(dto);
-            invoice.Id = default;
-            invoice.BuyerId = buyerId;
-            invoice.SellerId = sellerId;
-            invoice.Buyer = null!;
-            invoice.Seller = null!;
 
             Invoice addedInvoice = _invoiceRepository.Add(invoice);
             _invoiceRepository.SaveChanges();
 
             MapPersons(addedInvoice);
-
             return _mapper.Map<InvoiceDto>(addedInvoice);
         }
 
@@ -59,30 +63,20 @@ namespace Invoices.Api.Managers
             if (!_invoiceRepository.ExistsWithId(id))
                 return null;
 
-            if (dto.Buyer?.Id is not int buyerId || !_personRepository.ExistsWithId(buyerId))
+            Invoice? invoice = TryMapInvoice(id, dto);
+            if (invoice is null)
                 return null;
 
-            if (dto.Seller?.Id is not int sellerId || !_personRepository.ExistsWithId(sellerId))
-                return null;
-
-            Invoice invoice = _mapper.Map<Invoice>(dto);
-            invoice.Id = id;
-            invoice.BuyerId = buyerId;
-            invoice.SellerId = sellerId;
-            invoice.Buyer = null!;
-            invoice.Seller = null!;
-
-            var updatedInvoice = _invoiceRepository.Update(invoice);
+            Invoice updatedInvoice = _invoiceRepository.Update(invoice);
             _invoiceRepository.SaveChanges();
 
             MapPersons(updatedInvoice);
-
             return _mapper.Map<InvoiceDto>(updatedInvoice);
         }
 
         public bool Delete(int id)
         {
-            var invoice = _invoiceRepository.GetById(id);
+            Invoice? invoice = _invoiceRepository.GetById(id);
             if (invoice is null)
                 return false;
 
@@ -91,10 +85,72 @@ namespace Invoices.Api.Managers
             return true;
         }
 
+        private Invoice? TryMapInvoice(int? id, InvoiceDto dto)
+        {
+            if (dto.Buyer?.Id is not int buyerId || !_personRepository.ExistsWithId(buyerId))
+                return null;
+
+            if (dto.Seller?.Id is not int sellerId || !_personRepository.ExistsWithId(sellerId))
+                return null;
+
+            Invoice invoice = _mapper.Map<Invoice>(dto);
+
+            invoice.Id = id ?? default;
+            invoice.BuyerId = buyerId;
+            invoice.SellerId = sellerId;
+            invoice.Buyer = null!;
+            invoice.Seller = null!;
+
+            return invoice;
+        }
+
         private void MapPersons(Invoice invoice)
         {
             invoice.Buyer = _personRepository.GetById(invoice.BuyerId)!;
             invoice.Seller = _personRepository.GetById(invoice.SellerId)!;
+        }
+
+        public IList<InvoiceDto> GetSales(string identificationNumber)
+        {
+            IList<Person> persons = _personRepository.GetAllByIdentificationNumber(identificationNumber);
+
+            List<Invoice> invoices = persons
+                .SelectMany(p => p.Sales)
+                .Distinct()
+                .ToList();
+
+            return _mapper.Map<IList<InvoiceDto>>(invoices);
+        }
+
+        public IList<InvoiceDto> GetPurchases(string identificationNumber)
+        {
+            IList<Person> persons = _personRepository.GetAllByIdentificationNumber(identificationNumber);
+
+            List<Invoice> invoices = persons
+                .SelectMany(p => p.Purchases)
+                .Distinct()
+                .ToList();
+
+            return _mapper.Map<IList<InvoiceDto>>(invoices);
+        }
+
+        public InvoiceStatisticsDto GetStatistics()
+        {
+            IEnumerable<Invoice> allInvoices = _invoiceRepository.GetAll();
+
+            decimal currentYearSum = allInvoices
+                .Where(i => i.Issued.Year == DateTime.Now.Year)
+                .Sum(i => i.Price);
+
+            decimal allTimeSum = allInvoices.Sum(i => i.Price);
+            int count = allInvoices.Count();
+
+            return new InvoiceStatisticsDto
+            {
+                CurrentYearSum = currentYearSum,
+                AllTimeSum = allTimeSum,
+                InvoicesCount = count
+            };
         }
     }
 }

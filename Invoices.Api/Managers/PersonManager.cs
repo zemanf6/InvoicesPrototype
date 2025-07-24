@@ -25,15 +25,18 @@ namespace Invoices.Api.Managers
 
         public PersonDto? GetById(int id)
         {
-            var person = _personRepository.GetById(id);
-            if (person is null) 
+            Person? person = _personRepository.GetById(id);
+            if (person is null)
                 return null;
 
             return _mapper.Map<PersonDto>(person);
         }
-        
-        public PersonDto Create(PersonDto dto)
+
+        public PersonDto? Create(PersonDto dto)
         {
+            if (_personRepository.GetAllByIdentificationNumber(dto.IdentificationNumber).Any())
+                return null;
+
             Person person = _mapper.Map<Person>(dto);
             Person addedPerson = _personRepository.Add(person);
             _personRepository.SaveChanges();
@@ -42,13 +45,13 @@ namespace Invoices.Api.Managers
 
         public PersonDto? Edit(int id, PersonDto dto)
         {
-            var hidden = HidePerson(id);
+            Person? hidden = HidePerson(id);
             if (hidden is null)
                 return null;
 
-            var newPerson = _mapper.Map<Person>(dto);
+            Person? newPerson = _mapper.Map<Person>(dto);
             newPerson.Id = default;
-            var added = _personRepository.Add(newPerson);
+            Person added = _personRepository.Add(newPerson);
 
             _personRepository.SaveChanges();
             return _mapper.Map<PersonDto>(added);
@@ -74,6 +77,20 @@ namespace Invoices.Api.Managers
 
             person.Hidden = true;
             return _personRepository.Update(person);
+        }
+
+        public IList<PersonStatisticsDto> GetStatistics()
+        {
+            IEnumerable<Person> persons = _personRepository.GetAll();
+
+            List<PersonStatisticsDto> result = persons.Select(p => new PersonStatisticsDto
+            {
+                PersonId = p.Id,
+                PersonName = p.Name,
+                Revenue = p.Sales.Sum(i => i.Price)
+            }).ToList();
+
+            return result;
         }
     }
 }

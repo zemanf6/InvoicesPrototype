@@ -16,9 +16,9 @@ namespace Invoices.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<InvoiceDto>> GetAll()
+        public ActionResult<IEnumerable<InvoiceDto>> GetAll([FromQuery] InvoiceFilterDto? filter)
         {
-            IEnumerable<InvoiceDto> invoices = _invoiceManager.GetAll();
+            var invoices = _invoiceManager.GetAll(filter);
             return Ok(invoices);
         }
 
@@ -48,7 +48,7 @@ namespace Invoices.Api.Controllers
         {
             InvoiceDto? updatedInvoice = _invoiceManager.Edit(id, dto);
             if (updatedInvoice is null)
-                return NotFound();
+                return BadRequest();
 
             return Ok(updatedInvoice);
         }
@@ -61,6 +61,13 @@ namespace Invoices.Api.Controllers
                 return NotFound();
 
             return NoContent();
+        }
+
+        [HttpGet("statistics")]
+        public ActionResult<InvoiceStatisticsDto> GetStatistics()
+        {
+            var result = _invoiceManager.GetStatistics();
+            return Ok(result);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Invoices.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace Invoices.Data.Repositories
 {
@@ -51,6 +50,7 @@ namespace Invoices.Data.Repositories
         {
             _context.SaveChanges();
         }
+
         public bool ExistsWithId(int id)
         {
             return _dbSet.AsNoTracking().Any(e => EF.Property<int>(e, "Id") == id);

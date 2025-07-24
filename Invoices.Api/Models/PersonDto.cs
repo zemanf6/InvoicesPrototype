@@ -1,5 +1,4 @@
 ﻿using Invoices.Data.Entities.Enums;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Invoices.Api.Models

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Invoices.Data
 {
-    public class AppDbContext: DbContext
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -15,9 +15,17 @@ namespace Invoices.Data
             base.OnModelCreating(modelBuilder);
 
             // Aby se enum Country v databázi ukládal jako string a ne jako číslo
-            modelBuilder.Entity<Person>()
-                .Property(p => p.Country)
+            modelBuilder.Entity<Person>(builder =>
+            {
+                builder.Property(p => p.Country)
                 .HasConversion<string>();
+
+                builder.HasIndex(p => p.IdentificationNumber)
+                .IsUnique();
+
+                builder.HasIndex(p => p.Hidden);
+            });
+                
 
             modelBuilder.Entity<Invoice>(builder =>
             {
@@ -36,10 +44,13 @@ namespace Invoices.Data
 
                 builder.Property(i => i.Vat)
                     .HasColumnType("decimal(5, 2)");
+
+                builder.HasIndex(i => i.BuyerId);
+                builder.HasIndex(i => i.SellerId);
+                builder.HasIndex(i => i.Product);
+                builder.HasIndex(i => i.Price);
+                builder.HasIndex(i => i.Issued);
             });
-
-            
-
         }
     }
 }

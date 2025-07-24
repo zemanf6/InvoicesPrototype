@@ -1,8 +1,8 @@
 ﻿// using FluentValidation;
+// using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Invoices.Api.Managers.Interfaces;
 using Invoices.Api.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Invoices.Api.Controllers
 {
@@ -13,7 +13,7 @@ namespace Invoices.Api.Controllers
         private readonly IPersonManager _personManager;
         // private readonly IValidator<PersonDto> _validator;
 
-        public PersonsController(IPersonManager personManager /*, IValidator<PersonDto> validator */)
+        public PersonsController(IPersonManager personManager /*, IValidator<PersonDto> validator*/)
         {
             _personManager = personManager;
             // _validator = validator;
@@ -45,7 +45,7 @@ namespace Invoices.Api.Controllers
             var result = _validator.Validate(dto);
             if (!result.IsValid)
             {
-                var modelState = new ModelStateDictionary();
+                ModelStateDictionary modelState = new();
 
                 foreach (var error in result.Errors)
                 {
@@ -56,7 +56,10 @@ namespace Invoices.Api.Controllers
             }
             */
 
-            PersonDto createdPerson = _personManager.Create(dto);
+            PersonDto? createdPerson = _personManager.Create(dto);
+
+            if (createdPerson is null)
+                return Conflict("A person with this identification number already exists.");
 
             return CreatedAtAction(nameof(GetById), new { id = createdPerson.Id }, createdPerson);
         }
@@ -81,6 +84,13 @@ namespace Invoices.Api.Controllers
                 return NotFound();
 
             return NoContent();
+        }
+
+        [HttpGet("statistics")]
+        public ActionResult<IList<PersonStatisticsDto>> GetStatistics()
+        {
+            var stats = _personManager.GetStatistics();
+            return Ok(stats);
         }
     }
 }

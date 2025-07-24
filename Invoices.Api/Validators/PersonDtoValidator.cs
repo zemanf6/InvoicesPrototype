@@ -17,7 +17,8 @@ namespace Invoices.Api.Validators
             RuleFor(x => x.Country)
                 .IsInEnum().WithMessage("Invalid country value.");
 
-            // A dále...
+            // A dále... lze použít .Matches pro regex
+            // Nutno aktivovat kód v PersonsController
         }
     }
 }
