@@ -3,6 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Invoices.Data.Repositories
 {
+    /*
+     * Případně lze nad rámec zadání implementovat metody GetAll, GetById, SaveChanges, Add
+     * asynchronně (async, await)
+     * EF poskytuje metody ToListAsync(), FindAsync(), SaveChangesAsync(), AddAsync() 
+    */ 
     public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly AppDbContext _context;

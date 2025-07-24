@@ -7,6 +7,8 @@ using Invoices.Api.Managers;
 using Invoices.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using FluentValidation;
+using Invoices.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -22,6 +24,8 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IPersonManager, PersonManager>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<PersonDtoValidator>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
