@@ -1,6 +1,8 @@
-﻿using Invoices.Api.Managers.Interfaces;
+﻿using FluentValidation;
+using Invoices.Api.Managers.Interfaces;
 using Invoices.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Invoices.Api.Controllers
 {
@@ -9,10 +11,12 @@ namespace Invoices.Api.Controllers
     public class PersonsController : ControllerBase
     {
         private readonly IPersonManager _personManager;
+        private readonly IValidator<PersonDto> _validator;
 
-        public PersonsController(IPersonManager personManager)
+        public PersonsController(IPersonManager personManager, IValidator<PersonDto> validator)
         {
             _personManager = personManager;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -35,6 +39,19 @@ namespace Invoices.Api.Controllers
         [HttpPost]
         public ActionResult<PersonDto> Create([FromBody] PersonDto dto)
         {
+            var result = _validator.Validate(dto);
+            if (!result.IsValid)
+            {
+                var modelState = new ModelStateDictionary();
+
+                foreach (var error in result.Errors)
+                {
+                    modelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+
+                return ValidationProblem(modelState);
+            }
+
             PersonDto createdPerson = _personManager.Create(dto);
 
             return CreatedAtAction(nameof(GetById), new { id = createdPerson.Id }, createdPerson);
