@@ -6,6 +6,10 @@ using Invoices.Data.Repositories.Interfaces;
 
 namespace Invoices.Api.Managers
 {
+    /// <summary>
+    /// Manager vrstva obsahuje aplikační logiku spojenou s entitou Person.
+    /// Odděluje controller od přístupu k datům a umožňuje snadnější testování a údržbu.
+    /// </summary>
     public class PersonManager : IPersonManager
     {
         private readonly IPersonRepository _personRepository;
@@ -19,12 +23,15 @@ namespace Invoices.Api.Managers
 
         public IEnumerable<PersonDto> GetAll()
         {
+            // Vrátíme pouze aktivní (neskryté) osoby
             var people = _personRepository.GetByHidden(false);
             return _mapper.Map<IEnumerable<PersonDto>>(people);
         }
 
         public PersonDto Create(PersonDto dto)
         {
+            // BONUS rozšíření: Lze přidat kontrolu, zda už osoba s tímto IČ neexistuje
+            //                  a neshodí tak aplikaci
             Person person = _mapper.Map<Person>(dto);
             Person addedPerson = _personRepository.Add(person);
             _personRepository.SaveChanges();
@@ -33,6 +40,7 @@ namespace Invoices.Api.Managers
 
         public bool Delete(int id)
         {
+            // Soft delete: nastavíme příznak Hidden = true místo fyzického smazání
             if (HidePerson(id) != null)
             {
                 _personRepository.SaveChanges();
@@ -42,6 +50,10 @@ namespace Invoices.Api.Managers
             return false;
         }
 
+        /// <summary>
+        /// Označí osobu jako skrytou (soft delete).
+        /// Pokud osoba neexistuje, vrací null.
+        /// </summary>
         private Person? HidePerson(int personId)
         {
             Person? person = _personRepository.GetById(personId);

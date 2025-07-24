@@ -5,6 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Invoices.Api.Controllers
 {
+    /// <summary>
+    /// API kontroler pro práci s osobami (Person).
+    /// Slouží jako vstupní bod pro HTTP požadavky.
+    /// Veškerá logika je delegována do manageru – controller pouze zpracovává vstup a výstup.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class PersonsController : ControllerBase
@@ -22,15 +27,16 @@ namespace Invoices.Api.Controllers
         public ActionResult<IEnumerable<PersonDto>> GetAll()
         {
             IEnumerable<PersonDto> people = _personManager.GetAll();
-            return Ok(people);
+            return Ok(people); // HTTP 200 OK + data v těle odpovědi
         }
 
         [HttpPost]
         public ActionResult<PersonDto> Create([FromBody] PersonDto dto)
         {
             /*
-             * Případně lze nad rámec zadání implementovat validaci pomocí knihovny fluentValidation
-             * Ukázka kódu níže
+             * Bonus rozšíření: Validace pomocí fluent validation knihovny
+             * viz soubor Validators/PersonDtoValidator.cs, ukázka kódu níže,
+             * nutno aktivovat zakomentovaný kód v souboru
             var result = _validator.Validate(dto);
             if (!result.IsValid)
             {
@@ -46,7 +52,8 @@ namespace Invoices.Api.Controllers
             */
             PersonDto createdPerson = _personManager.Create(dto);
 
-            // TODO: až bude implementován detail (GET /api/persons/{id}), lze vracet tohle:
+            // V budoucnu: až bude implementován detail (GET /api/persons/{id}),
+            // lze vracet odkaz na nově vytvořený záznam v location hlavičce:
             // return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
 
             return Created(string.Empty, createdPerson);
@@ -58,9 +65,9 @@ namespace Invoices.Api.Controllers
             bool success = _personManager.Delete(id);
 
             if (!success)
-                return NotFound();
+                return NotFound(); // HTTP 404 – pokud osoba neexistuje
 
-            return NoContent();
+            return NoContent(); // HTTP 204 – smazáno, server nic dále nevrací
         }
     }
 }
