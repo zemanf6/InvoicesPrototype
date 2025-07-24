@@ -2,8 +2,6 @@
 using Invoices.Api.Managers.Interfaces;
 using Invoices.Api.Models;
 using Invoices.Data.Entities;
-using Invoices.Data.Migrations;
-using Invoices.Data.Repositories;
 using Invoices.Data.Repositories.Interfaces;
 
 namespace Invoices.Api.Managers
@@ -58,8 +56,7 @@ namespace Invoices.Api.Managers
 
         public InvoiceDto? Edit(int id, InvoiceDto dto)
         {
-            var existing = _invoiceRepository.GetById(id);
-            if (existing == null)
+            if (!_invoiceRepository.ExistsWithId(id))
                 return null;
 
             if (dto.Buyer?.Id is not int buyerId || dto.Seller?.Id is not int sellerId)

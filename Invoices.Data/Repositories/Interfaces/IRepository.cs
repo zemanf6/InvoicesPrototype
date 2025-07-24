@@ -8,5 +8,6 @@
         T Update(T entity);
         void Delete(T entity);
         void SaveChanges();
+        bool ExistsWithId(int id);
     }
 }

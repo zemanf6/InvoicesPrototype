@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+﻿// using FluentValidation;
 using Invoices.Api.Managers.Interfaces;
 using Invoices.Api.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +11,12 @@ namespace Invoices.Api.Controllers
     public class PersonsController : ControllerBase
     {
         private readonly IPersonManager _personManager;
-        private readonly IValidator<PersonDto> _validator;
+        // private readonly IValidator<PersonDto> _validator;
 
-        public PersonsController(IPersonManager personManager, IValidator<PersonDto> validator)
+        public PersonsController(IPersonManager personManager /*, IValidator<PersonDto> validator */)
         {
             _personManager = personManager;
-            _validator = validator;
+            // _validator = validator;
         }
 
         [HttpGet]
@@ -39,6 +39,9 @@ namespace Invoices.Api.Controllers
         [HttpPost]
         public ActionResult<PersonDto> Create([FromBody] PersonDto dto)
         {
+            /*
+             * Případně lze nad rámec zadání implementovat validaci pomocí knihovny fluentValidation
+             * Ukázka kódu níže
             var result = _validator.Validate(dto);
             if (!result.IsValid)
             {
@@ -51,6 +54,7 @@ namespace Invoices.Api.Controllers
 
                 return ValidationProblem(modelState);
             }
+            */
 
             PersonDto createdPerson = _personManager.Create(dto);
 

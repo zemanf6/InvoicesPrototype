@@ -1,8 +1,14 @@
 ﻿using Invoices.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Invoices.Data.Repositories
 {
+    /*
+    * Případně lze nad rámec zadání implementovat metody GetAll, GetById, SaveChanges, Add
+    * asynchronně (async, await)
+    * EF poskytuje metody ToListAsync(), FindAsync(), SaveChangesAsync(), AddAsync() 
+    */
     public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly AppDbContext _context;
@@ -44,6 +50,10 @@ namespace Invoices.Data.Repositories
         public void SaveChanges()
         {
             _context.SaveChanges();
+        }
+        public bool ExistsWithId(int id)
+        {
+            return _dbSet.AsNoTracking().Any(e => EF.Property<int>(e, "Id") == id);
         }
     }
 }

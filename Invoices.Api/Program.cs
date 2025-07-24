@@ -7,7 +7,6 @@ using Invoices.Api.Managers;
 using Invoices.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Identity;
 using Invoices.Api.Validators;
 using FluentValidation;
 
