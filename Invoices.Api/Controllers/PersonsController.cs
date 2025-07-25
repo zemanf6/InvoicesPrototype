@@ -37,19 +37,17 @@ namespace Invoices.Api.Controllers
     public class PersonsController : ControllerBase
     {
         private readonly IPersonManager _personManager;
-        // private readonly IValidator<PersonDto> _validator;
 
-        public PersonsController(IPersonManager personManager/*, IValidator<PersonDto> validator */)
+        public PersonsController(IPersonManager personManager)
         {
             _personManager = personManager;
-            // _validator = validator;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<PersonDto>> GetAll()
         {
             IEnumerable<PersonDto> people = _personManager.GetAll();
-            return Ok(people); // HTTP 200 OK + data v těle odpovědi
+            return Ok(people);
         }
 
         [HttpPost]

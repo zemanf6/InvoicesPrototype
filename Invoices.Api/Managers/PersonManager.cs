@@ -61,7 +61,7 @@ namespace Invoices.Api.Managers
         public bool Delete(int id)
         {
             // Soft delete: nastavíme příznak Hidden = true místo fyzického smazání
-            if (HidePerson(id) != null)
+            if (HidePerson(id) is not null)
             {
                 _personRepository.SaveChanges();
                 return true;
