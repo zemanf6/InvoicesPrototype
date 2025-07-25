@@ -36,6 +36,19 @@ namespace Invoices.Api.Controllers
             return Ok(person);
         }
 
+        /// <summary>
+        /// Creates a new person.
+        /// </summary>
+        /// <remarks>
+        /// Zde třeba příklad toho, co lze poslat v requestu
+        /// Bonus rozšíření: Přidat swagger dokumentaci k endpointům
+        /// </remarks>
+        /// <param name="dto">The person data to create</param>
+        /// <returns>The created person</returns>
+        /// <response code="201">Returns the newly created person</response>
+        /// <response code="400">If the input is invalid</response>
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PersonDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public ActionResult<PersonDto> Create([FromBody] PersonDto dto)
         {
