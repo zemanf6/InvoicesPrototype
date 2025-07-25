@@ -90,45 +90,7 @@ namespace Invoices.Data.Migrations
 
                     b.HasIndex("IdentificationNumber");
 
-                    b.ToTable("Persons");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccountNumber = "1234567890",
-                            BankCode = "0100",
-                            City = "Praha",
-                            Country = "CZECHIA",
-                            Hidden = false,
-                            Iban = "CZ6501000000001234567890",
-                            IdentificationNumber = "12345678",
-                            Mail = "jan.novak@example.com",
-                            Name = "Jan Novák",
-                            Note = "Testovací osoba",
-                            Street = "Ulice 1",
-                            TaxNumber = "CZ12345678",
-                            Telephone = "+420123456789",
-                            Zip = "10000"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccountNumber = "0987654321",
-                            BankCode = "0900",
-                            City = "Bratislava",
-                            Country = "SLOVAKIA",
-                            Hidden = false,
-                            Iban = "SK8909000000000987654321",
-                            IdentificationNumber = "87654321",
-                            Mail = "anna.horvathova@example.sk",
-                            Name = "Anna Horváthová",
-                            Note = "Druhá osoba",
-                            Street = "Cesta 5",
-                            TaxNumber = "SK87654321",
-                            Telephone = "+421987654321",
-                            Zip = "81101"
-                        });
+                    b.ToTable("Persons", (string)null);
                 });
 #pragma warning restore 612, 618
         }
