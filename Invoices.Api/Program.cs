@@ -31,6 +31,12 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<AutoMapperProfile>();
 });
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SchemaFilter<DateOnlySchemaFilter>();
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseLazyLoadingProxies()
            .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

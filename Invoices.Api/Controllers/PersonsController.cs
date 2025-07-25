@@ -56,10 +56,7 @@ namespace Invoices.Api.Controllers
             }
             */
 
-            PersonDto? createdPerson = _personManager.Create(dto);
-
-            if (createdPerson is null)
-                return Conflict("A person with this identification number already exists.");
+            PersonDto createdPerson = _personManager.Create(dto);
 
             return CreatedAtAction(nameof(GetById), new { id = createdPerson.Id }, createdPerson);
         }

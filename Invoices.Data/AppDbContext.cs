@@ -20,8 +20,7 @@ namespace Invoices.Data
                 builder.Property(p => p.Country)
                 .HasConversion<string>();
 
-                builder.HasIndex(p => p.IdentificationNumber)
-                .IsUnique();
+                builder.HasIndex(p => p.IdentificationNumber);
 
                 builder.HasIndex(p => p.Hidden);
             });

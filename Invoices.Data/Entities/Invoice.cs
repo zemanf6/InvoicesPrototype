@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
         public int InvoiceNumber { get; set; }
-        public DateTime Issued { get; set; }
-        public DateTime DueDate { get; set; }
+        public DateOnly Issued { get; set; }
+        public DateOnly DueDate { get; set; }
         public required string Product { get; set; }
         public decimal Price { get; set; }
         public decimal Vat { get; set; }

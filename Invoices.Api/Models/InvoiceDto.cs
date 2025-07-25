@@ -12,10 +12,10 @@ namespace Invoices.Api.Models
         public int InvoiceNumber { get; set; }
 
         [Required]
-        public DateTime Issued { get; set; }
+        public DateOnly Issued { get; set; }
 
         [Required]
-        public DateTime DueDate { get; set; }
+        public DateOnly DueDate { get; set; }
 
         [Required]
         public string Product { get; set; } = "";

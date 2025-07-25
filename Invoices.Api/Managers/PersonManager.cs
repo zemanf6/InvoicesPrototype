@@ -32,11 +32,8 @@ namespace Invoices.Api.Managers
             return _mapper.Map<PersonDto>(person);
         }
 
-        public PersonDto? Create(PersonDto dto)
+        public PersonDto Create(PersonDto dto)
         {
-            if (_personRepository.GetAllByIdentificationNumber(dto.IdentificationNumber).Any())
-                return null;
-
             Person person = _mapper.Map<Person>(dto);
             Person addedPerson = _personRepository.Add(person);
             _personRepository.SaveChanges();
