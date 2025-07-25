@@ -56,7 +56,7 @@ namespace Invoices.Api.Managers
 
         public bool Delete(int id)
         {
-            if (HidePerson(id) != null)
+            if (HidePerson(id) is not null)
             {
                 _personRepository.SaveChanges();
                 return true;

@@ -30,7 +30,7 @@ namespace Invoices.Api.Controllers
         public ActionResult<PersonDto> GetById(int id)
         {
             PersonDto? person = _personManager.GetById(id);
-            if (person == null)
+            if (person is null)
                 return NotFound();
 
             return Ok(person);
@@ -86,7 +86,7 @@ namespace Invoices.Api.Controllers
         [HttpGet("statistics")]
         public ActionResult<IList<PersonStatisticsDto>> GetStatistics()
         {
-            var stats = _personManager.GetStatistics();
+            IList<PersonStatisticsDto> stats = _personManager.GetStatistics();
             return Ok(stats);
         }
     }
