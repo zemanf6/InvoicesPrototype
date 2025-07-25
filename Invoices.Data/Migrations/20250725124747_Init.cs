@@ -5,7 +5,7 @@
 namespace Invoices.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initialize : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,7 @@ namespace Invoices.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdentificationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdentificationNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TaxNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BankCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -35,6 +35,16 @@ namespace Invoices.Data.Migrations
                 {
                     table.PrimaryKey("PK_Persons", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Persons_Hidden",
+                table: "Persons",
+                column: "Hidden");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Persons_IdentificationNumber",
+                table: "Persons",
+                column: "IdentificationNumber");
         }
 
         /// <inheritdoc />

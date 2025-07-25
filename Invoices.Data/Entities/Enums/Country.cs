@@ -28,7 +28,7 @@ namespace Invoices.Data.Entities.Enums
     /// </summary>
     public enum Country
     {
-        Czechia,
-        Slovakia
+        CZECHIA,
+        SLOVAKIA
     }
 }

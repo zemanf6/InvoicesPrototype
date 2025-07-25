@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Invoices.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250723143037_Initialize")]
-    partial class Initialize
+    [Migration("20250725124747_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,7 +57,7 @@ namespace Invoices.Data.Migrations
 
                     b.Property<string>("IdentificationNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Mail")
                         .IsRequired()
@@ -88,6 +88,10 @@ namespace Invoices.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Hidden");
+
+                    b.HasIndex("IdentificationNumber");
 
                     b.ToTable("Persons");
                 });

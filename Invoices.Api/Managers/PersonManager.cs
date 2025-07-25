@@ -1,4 +1,26 @@
-﻿using AutoMapper;
+﻿/*  _____ _______         _                      _
+ * |_   _|__   __|       | |                    | |
+ *   | |    | |_ __   ___| |___      _____  _ __| | __  ___ ____
+ *   | |    | | '_ \ / _ \ __\ \ /\ / / _ \| '__| |/ / / __|_  /
+ *  _| |_   | | | | |  __/ |_ \ V  V / (_) | |  |   < | (__ / /
+ * |_____|  |_|_| |_|\___|\__| \_/\_/ \___/|_|  |_|\_(_)___/___|
+ *
+ *                      ___ ___ ___
+ *                     | . |  _| . |  LICENCE
+ *                     |  _|_| |___|
+ *                     |_|
+ *
+ *    REKVALIFIKAČNÍ KURZY  <>  PROGRAMOVÁNÍ  <>  IT KARIÉRA
+ *
+ * Tento zdrojový kód je součástí profesionálních IT kurzů na
+ * WWW.ITNETWORK.CZ
+ *
+ * Kód spadá pod licenci PRO obsahu a vznikl díky podpoře
+ * našich členů. Je určen pouze pro osobní užití a nesmí být šířen.
+ * Více informací na http://www.itnetwork.cz/licence
+ */
+
+using AutoMapper;
 using Invoices.Api.Managers.Interfaces;
 using Invoices.Api.Models;
 using Invoices.Data.Entities;
@@ -30,8 +52,6 @@ namespace Invoices.Api.Managers
 
         public PersonDto Create(PersonDto dto)
         {
-            // BONUS rozšíření: Lze přidat kontrolu, zda už osoba s tímto IČ neexistuje
-            //                  a neshodí tak aplikaci
             Person person = _mapper.Map<Person>(dto);
             Person addedPerson = _personRepository.Add(person);
             _personRepository.SaveChanges();

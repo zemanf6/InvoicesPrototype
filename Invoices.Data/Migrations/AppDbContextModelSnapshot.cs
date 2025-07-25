@@ -54,7 +54,7 @@ namespace Invoices.Data.Migrations
 
                     b.Property<string>("IdentificationNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Mail")
                         .IsRequired()
@@ -86,7 +86,11 @@ namespace Invoices.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Persons", (string)null);
+                    b.HasIndex("Hidden");
+
+                    b.HasIndex("IdentificationNumber");
+
+                    b.ToTable("Persons");
                 });
 #pragma warning restore 612, 618
         }

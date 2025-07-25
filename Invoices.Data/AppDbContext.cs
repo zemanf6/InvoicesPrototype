@@ -59,8 +59,7 @@ namespace Invoices.Data
                     .HasConversion<string>();
 
                 // Identifikační číslo musí být unikátní – přidáme unikátní index
-                builder.HasIndex(p => p.IdentificationNumber)
-                    .IsUnique();
+                builder.HasIndex(p => p.IdentificationNumber);
 
                 // Přidáme index na sloupec Hidden – zrychlí filtrování skrytých osob
                 builder.HasIndex(p => p.Hidden);
