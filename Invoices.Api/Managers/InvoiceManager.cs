@@ -30,9 +30,6 @@ namespace Invoices.Api.Managers
                 limit: filter?.Limit
             );
 
-            foreach (Invoice invoice in invoices)
-                MapPersons(invoice);
-
             return _mapper.Map<IEnumerable<InvoiceDto>>(invoices);
         }
 
@@ -54,7 +51,6 @@ namespace Invoices.Api.Managers
             Invoice addedInvoice = _invoiceRepository.Add(invoice);
             _invoiceRepository.SaveChanges();
 
-            MapPersons(addedInvoice);
             return _mapper.Map<InvoiceDto>(addedInvoice);
         }
 
@@ -70,7 +66,6 @@ namespace Invoices.Api.Managers
             Invoice updatedInvoice = _invoiceRepository.Update(invoice);
             _invoiceRepository.SaveChanges();
 
-            MapPersons(updatedInvoice);
             return _mapper.Map<InvoiceDto>(updatedInvoice);
         }
 
@@ -93,6 +88,18 @@ namespace Invoices.Api.Managers
             if (dto.Seller?.Id is not int sellerId || !_personRepository.ExistsWithId(sellerId))
                 return null;
 
+            /* Pattern matching by byl na některé moc, když tak klasicky:
+             * if (dto.Buyer?.Id == null)
+                    return null;
+
+               int buyerId = dto.Buyer.Id;
+
+               if (!_personRepository.ExistsWithId(buyerId))
+                    return null;
+             *
+             * A stejně pro sellera
+             */
+
             Invoice invoice = _mapper.Map<Invoice>(dto);
 
             invoice.Id = id ?? default;
@@ -102,12 +109,6 @@ namespace Invoices.Api.Managers
             invoice.Seller = null!;
 
             return invoice;
-        }
-
-        private void MapPersons(Invoice invoice)
-        {
-            invoice.Buyer = _personRepository.GetById(invoice.BuyerId)!;
-            invoice.Seller = _personRepository.GetById(invoice.SellerId)!;
         }
 
         public IList<InvoiceDto> GetSales(string identificationNumber)
