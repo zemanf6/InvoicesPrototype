@@ -20,7 +20,8 @@
  * Více informací na http://www.itnetwork.cz/licence
  */
 
-//using FluentValidation;
+// using FluentValidation;
+// using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Invoices.Api.Managers.Interfaces;
 using Invoices.Api.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -37,10 +38,12 @@ namespace Invoices.Api.Controllers
     public class PersonsController : ControllerBase
     {
         private readonly IPersonManager _personManager;
+        // private readonly IValidator<PersonDto> _validator;
 
-        public PersonsController(IPersonManager personManager)
+        public PersonsController(IPersonManager personManager /*, IValidator<PersonDto> validator*/)
         {
             _personManager = personManager;
+            // _validator = validator;
         }
 
         [HttpGet]
